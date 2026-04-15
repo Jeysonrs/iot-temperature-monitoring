@@ -10,3 +10,5 @@ openai
 PyJWT==2.10.1
 pwdlib[argon2]
 python-multipart
+reportlab
+matplotlib
