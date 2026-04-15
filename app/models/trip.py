@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, Boolean, DateTime
+from sqlalchemy import Column, Integer, Boolean, DateTime, String, Float, ForeignKey
+from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db.base import Base
 from fastapi import APIRouter
@@ -12,9 +13,29 @@ class Trip(Base):
     __tablename__ = "trips"
 
     id = Column(Integer, primary_key=True, index=True)
-    active = Column(Boolean, default=True)
-    start_time = Column(DateTime, default=datetime.utcnow)
+    product_type = Column(String, nullable=False)
+    min_temp = Column(Float, nullable=False)
+    max_temp = Column(Float, nullable=False)
 
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    active = Column(Boolean, default=True, nullable=False)
+    start_time = Column(DateTime, default=datetime.utcnow, nullable=False)
+    end_time = Column(DateTime, nullable=True)
+
+    user = relationship("User", back_populates="trips")
+
+    temperatures = relationship(
+        "Temperature",
+        back_populates="trip",
+        cascade="all, delete-orphan",
+    )
+
+    alerts = relationship(
+        "Alert",
+        back_populates="trip",
+        cascade="all, delete-orphan",
+    )
 
 router = APIRouter()
 
